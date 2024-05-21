@@ -166,7 +166,7 @@ def global_shap():
     return f'<img src="data:image/png;base64,{encoded_string}">'
 
 # Route qui affiche la feature importance locale pour le client sélectionné :
-@app.get('/local_shap/<int:client_id>', methods=['GET'])
+@app.route('/local_shap/<int:client_id>', methods=['GET'])
 def local_shap(client_id):
     if client_id in clients_ids:  # On s'assure ici que client_id est valide
         client_index = features.index.get_loc(client_id)  # On récupère l'index du client dans le DataFrame features
@@ -220,4 +220,4 @@ def get_scaled_data():
     return features.to_json(orient='records')
     
 if __name__ == '__main__':
-    app.run(debug=True)#, host='0.0.0.0', port=7676)
+    app.run(debug=True, host='0.0.0.0', port=7676)
