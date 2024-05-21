@@ -31,4 +31,4 @@ jobs:
 
       - name: Run Streamlit
         run: |
-          heroku run streamlit run app.py --app <dashboard-credit-app>
+          heroku run streamlit run app.py --app dashboard-credit-app
