@@ -194,6 +194,7 @@ def main():
                                         index=0, placeholder="Liste variables")
 
                     if feature:
+                        st.write(f"Pour le client sélectionné, la valeur de {feature} est {selected_client[feature].values[0]}")
                         fig, ax = plt.subplots()
                         sns.kdeplot(client_data[feature], label='Ensemble clients', ax=ax)
 
