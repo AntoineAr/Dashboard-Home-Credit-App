@@ -118,12 +118,12 @@ def welcome():
 
 # Route qui affiche la liste des IDs clients valides :
 
-@app.route('/list_ids')
+@app.route('/list_ids', methods=['GET'])
 def print_id_list():
     return f'Liste des id clients valides :\n\n{(clients_ids)}'
 
 # Route qui affiche les informations d'un client et sa probabilité de défaut de paiement :
-@app.route('/prediction/<int:client_id>')
+@app.route('/prediction/<int:client_id>', methods=['GET'])
 def prediction(client_id):
     if client_id in clients_ids:
         client_data = features.loc[client_id].values.reshape(1, -1)
@@ -143,7 +143,7 @@ def prediction(client_id):
         return 'Client_id non valide.'
 
 # Route qui affiche la feature importance globale via un summary plot shap :
-@app.route('/global_shap')
+@app.route('/global_shap', methods=['GET'])
 def global_shap():
     shap.summary_plot(shap_values[1], 
                       features=features.values, 
@@ -166,7 +166,7 @@ def global_shap():
     return f'<img src="data:image/png;base64,{encoded_string}">'
 
 # Route qui affiche la feature importance locale pour le client sélectionné :
-@app.get('/local_shap/<int:client_id>')
+@app.get('/local_shap/<int:client_id>', methods=['GET'])
 def local_shap(client_id):
     if client_id in clients_ids:  # On s'assure ici que client_id est valide
         client_index = features.index.get_loc(client_id)  # On récupère l'index du client dans le DataFrame features
@@ -203,21 +203,21 @@ def local_shap(client_id):
         return 'ID Client non valide.'
 
 # Route qui permet d'accéder aux données clients transformées :
-@app.route('/client_data')
+@app.route('/client_data', methods=['GET'])
 def get_client_data():
     df_reset = df.reset_index()
     return df_reset.to_json(orient='records')
 
 # Route qui permet d'accéder aux données brutes :
-@app.route('/client_raw_data')
+@app.route('/client_raw_data', methods=['GET'])
 def get_client_raw_data():
     df_brut = load_brut_data("./data/subset_train_brut.csv")
     df_brut['DAYS_BIRTH'] = df_brut['DAYS_BIRTH'].apply(lambda x: int(np.abs(x) // 365))
     return df_brut.to_json(orient='records')
 
-@app.route('/scaled_data')
+@app.route('/scaled_data', methods=['GET'])
 def get_scaled_data():
     return features.to_json(orient='records')
     
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=7676)
+    app.run(debug=True)#, host='0.0.0.0', port=7676)

@@ -27,15 +27,6 @@ def get_client_ids():
         st.error(f"Erreur lors de la récupération des IDs clients: {e}")
         return []
 
-def main():
-    st.title("Tableau de bord - Décision de Crédit")
-    st.write("Bienvenue sur le tableau de bord de prédiction de défaut de paiement.")
-    client_ids = get_client_ids()
-    if not client_ids:
-        st.error("Impossible de récupérer les IDs clients.")
-        return
-    client_id = st.selectbox('Veuillez sélectionnez un ID client', client_ids, index=0)
-
 # Fonction pour obtenir les informations et prédictions d'un client
 def get_client_prediction(client_id):
     response = requests.get(f"{API_URL}/prediction/{client_id}")
