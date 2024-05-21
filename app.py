@@ -16,15 +16,25 @@ import matplotlib.pyplot as plt
 # Configuration de l'URL de l'API
 API_URL = "https://dashboard-credit-app-85ce4e23fc73.herokuapp.com"
 
-# Fonction pour obtenir la liste des IDs clients
+# Fonction pour obtenir la liste des IDs clients:
 def get_client_ids():
-    response = requests.get(f"{API_URL}/list_ids")
-    if response.status_code == 200:
+    try:
+        response = requests.get(f"{API_URL}/list_ids")
+        response.raise_for_status()
         ids = response.text.strip('Liste des id clients valides :\n\n').strip('[]').split(', ')
         return [int(id) for id in ids]
-    else:
-        st.error("Erreur lors de la récupération des IDs clients.")
+    except requests.RequestException as e:
+        st.error(f"Erreur lors de la récupération des IDs clients: {e}")
         return []
+
+def main():
+    st.title("Tableau de bord - Décision de Crédit")
+    st.write("Bienvenue sur le tableau de bord de prédiction de défaut de paiement.")
+    client_ids = get_client_ids()
+    if not client_ids:
+        st.error("Impossible de récupérer les IDs clients.")
+        return
+    client_id = st.selectbox('Veuillez sélectionnez un ID client', client_ids, index=0)
 
 # Fonction pour obtenir les informations et prédictions d'un client
 def get_client_prediction(client_id):
@@ -110,7 +120,11 @@ def display_gauge(score, threshold):
 def main():
     st.title("Tableau de bord - Décision de Crédit")
     st.write("Bienvenue sur le tableau de bord de prédiction de défaut de paiement.")
-    client_id = st.selectbox('Veuillez sélectionnez un ID client', get_client_ids(),
+    client_ids = get_client_ids()
+    if not client_ids:
+        st.error("Impossible de récupérer les IDs clients.")
+        return
+    client_id = st.selectbox('Veuillez sélectionnez un ID client', client_ids,
                          index=None, placeholder="Liste identifiants clients")
     
     if st.button("Obtenir la prédiction"):
