@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 # plt.switch_backend('Agg')
 
 # Configuration de l'URL de l'API
-API_URL = "http://127.0.0.1:7676"
+API_URL = "https://dashboard-credit-app-85ce4e23fc73.herokuapp.com/"
 
 # Fonction pour obtenir la liste des IDs clients
 def get_client_ids():

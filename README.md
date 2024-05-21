@@ -13,6 +13,6 @@ Il s'agit ici de réalisé un tableau de bord, via streamlit, se basant sur cett
 
 ### Objectifs :
 
-   - Retravailler l'API créée précédemment, on y a ajouté quelques éléments (voir lien vers fichier main_dash.py)
-   - Déployer cette API sur le cloud (heroku : lien vers nouvelle API)
-   - Créer un tableau de bord streamlit lié à cette API : lien vers app.py
+   - Retravailler l'API créée précédemment, on y a ajouté quelques éléments (https://github.com/AntoineAr/Dashboard-Home-Credit-App/blob/main/main_dash.py)
+   - Déployer cette API sur le cloud (https://dashboard-credit-app-85ce4e23fc73.herokuapp.com/)
+   - Créer un tableau de bord streamlit lié à cette API : https://github.com/AntoineAr/Dashboard-Home-Credit-App/blob/main/app.py
