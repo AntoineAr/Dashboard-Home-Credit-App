@@ -28,7 +28,3 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "dashboard-credit-app"
           heroku_email: "arragon.antoine@gmail.com"
-
-      - name: Run Streamlit
-        run: |
-          heroku run streamlit run app.py --app dashboard-credit-app
