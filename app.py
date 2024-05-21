@@ -286,7 +286,7 @@ def main():
                 st.write("**Sélectionnez deux variables pour afficher le scatterplot de leur corrélation**")
                 features_corr = ['AMT_INCOME_TOTAL', 'EXT_SOURCE_2', 'EXT_SOURCE_3', 'DOWN_PAYMENT', 'PAYMENT_RATE', 'EXT_SOURCE_1', 
                             'BURO_NB_CURRENCY', 'PREV_PERC_INST_PAID_ON_TIME', 'YEARS_EMPLOYED', 
-                            'MEAN_PREV_CNT_PAYMENT','AMT_CREDIT', 'DAYS_BIRTH',
+                            'MEAN_PREV_CNT_PAYMENT','AMT_CREDIT', 'YEARS_BIRTH',
                             'INCOME_PER_PERSON', 'CREDIT_INCOME_RATIO']
                 feature_x = st.selectbox('Variable X', features_corr, index=0, placeholder="Liste variables")
                 feature_y = st.selectbox('Variable Y', features_corr, index=1, placeholder="Liste variables")
