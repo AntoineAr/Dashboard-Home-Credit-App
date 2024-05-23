@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 # plt.switch_backend('Agg')
 
 # Configuration de l'URL de l'API
-API_URL = "https://api-flask-credit-368cdcf3e0aa.herokuapp.com/"
+API_URL = "http://127.0.0.1:7676"
 
 # Fonction pour obtenir la liste des IDs clients:
 def get_client_ids():
@@ -175,7 +175,7 @@ def main():
                     if client_data.empty or client_raw_data.empty:
                         st.error("Erreur lors de la récupération des données de comparaison.")
                     else:
-                        # Assurez-vous que l'ID client est bien dans l'index
+                        # On s'assure que l'Id client est bien dans l'index
                         if client_id in client_data['SK_ID_CURR'].values:
                             selected_client = client_data[client_data['SK_ID_CURR'] == client_id]
                         else:
@@ -194,7 +194,9 @@ def main():
                                         index=0, placeholder="Liste variables")
 
                     if feature:
-                        st.write(f"Pour le client sélectionné, la valeur de {feature} est {selected_client[feature].values[0]}")
+                        st.write(f"Pour le client {client_id}, la valeur de {feature} est {selected_client[feature].values[0].round(2)}")
+                        st.write("*Les différences de valeurs pour une même variable entre ce graphique et le graphique précédent*\n"
+                                 "*sont dues à la normalisation des données nécessaire à la modélisation.*")
                         fig, ax = plt.subplots()
                         sns.kdeplot(client_data[feature], label='Ensemble clients', ax=ax)
 

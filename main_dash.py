@@ -173,6 +173,10 @@ def local_shap(client_id):
         
         # On récupère les valeurs SHAP spécifiques au client :
         client_shap_values = shap_values[1][client_index]
+
+        # Log de vérification
+        print(f"Features (scaled) for client {client_id}: {features.iloc[client_index]}")
+        print(f"SHAP values for client {client_id}: {client_shap_values}")
         
         # On crée une explication SHAP pour le client :
         exp = shap.Explanation(values = client_shap_values, 
