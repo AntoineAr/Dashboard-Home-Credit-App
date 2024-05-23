@@ -235,7 +235,7 @@ def main():
                     # st.write("Données du client sélectionné :")
                     # st.write(selected_client)
 
-                    other_features = ['DAYS_BIRTH', 'AMT_INCOME_TOTAL', 'AMT_CREDIT', 'NAME_INCOME_TYPE',
+                    other_features = ['YEARS_BIRTH', 'AMT_INCOME_TOTAL', 'AMT_CREDIT', 'NAME_INCOME_TYPE',
                                             'AMT_CREDIT', 'NAME_EDUCATION_TYPE', 'NAME_FAMILY_STATUS']
 
                     other_feature = st.selectbox('Veuillez sélectionner une variable à comparer', other_features,
@@ -287,10 +287,10 @@ def main():
             if st.checkbox("Corrélation entre variables"):
                 features_scaled = get_scaled_data()
                 st.write("**Sélectionnez deux variables pour afficher le scatterplot de leur corrélation**")
-                features_corr = ['AMT_INCOME_TOTAL', 'EXT_SOURCE_2', 'EXT_SOURCE_3', 'DOWN_PAYMENT', 'PAYMENT_RATE', 'EXT_SOURCE_1', 
+                features_corr = ['CREDIT_INCOME_RATIO','EXT_SOURCE_2', 'AMT_INCOME_TOTAL',  'EXT_SOURCE_3', 'DOWN_PAYMENT', 'PAYMENT_RATE', 'EXT_SOURCE_1', 
                             'BURO_NB_CURRENCY', 'PREV_PERC_INST_PAID_ON_TIME', 'YEARS_EMPLOYED', 
                             'MEAN_PREV_CNT_PAYMENT','AMT_CREDIT', 'YEARS_BIRTH',
-                            'INCOME_PER_PERSON', 'CREDIT_INCOME_RATIO']
+                            'INCOME_PER_PERSON']
                 feature_x = st.selectbox('Variable X', features_corr, index=0, placeholder="Liste variables")
                 feature_y = st.selectbox('Variable Y', features_corr, index=1, placeholder="Liste variables")
 
