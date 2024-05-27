@@ -136,7 +136,7 @@ def main():
         st.write(f'*Le seuil de refus est fixé à : {0.377 * 100:.2f}% (obtenu lors de la modélisation)*')
         
         client_infos = prediction['client_infos']
-        st.sidebar.write("**Informations de la personne sélectionnée :**")
+        st.sidebar.write("**Informations de la personne sélectionnée**")
         st.sidebar.write(f"**Sexe :** {client_infos['sexe']}")
         st.sidebar.write(f"**Âge :** {client_infos['âge']} ans")
         st.sidebar.write(f"**Revenu :** {client_infos['revenu']} €")
@@ -251,9 +251,9 @@ def main():
 
                     if other_feature:
                         if client_raw_data[other_feature].nunique() > 10:
-                            st.write(f"*Pour le client {client_id}, la valeur de {other_feature} est {selected_client[other_feature].values[0]}. Moyenne de l'ensemble des client.e.s : {client_raw_data[other_feature].mean().round(2)}.*")
+                            st.write(f"*Pour l'individu' {client_id}, la valeur de {other_feature} est {selected_client[other_feature].values[0]}. Moyenne de l'ensemble des client.e.s : {client_raw_data[other_feature].mean().round(2)}.*")
                             fig, ax = plt.subplots()
-                            sns.kdeplot(client_raw_data[other_feature], label='Ensemble clients', ax=ax)
+                            sns.kdeplot(client_raw_data[other_feature], label='Ensemble client.e.s', ax=ax)
 
                             if not selected_client.empty:
                                 # Vérifiez que la feature existe dans les données du client sélectionné
