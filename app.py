@@ -273,7 +273,22 @@ def main():
                                     explode.append(0)
                             st.write(f"Valeurs possibles : {possible_values}")
                             fig, ax = plt.subplots()
-                            client_raw_data[other_feature].value_counts().plot.pie(autopct='%1.1f%%', ax=ax, explode=explode, startangle=90)
+                            wedges, texts, autotexts = ax.pie(
+                                client_raw_data[other_feature].value_counts(), autopct='%1.1f%%', explode=explode, startangle=90,
+                                textprops=dict(color="w"), pctdistance=0.85
+                            )
+                            ax.legend(wedges, possible_values, title=other_feature, loc='center left', bbox_to_anchor=(1, 0, 0.5, 1))
+
+                            # Ajuster les étiquettes
+                            for text in texts:
+                                text.set_fontsize(8)
+                            for autotext in autotexts:
+                                autotext.set_fontsize(8)
+
+                            # Dessiner un cercle au centre pour créer un effet de beignet
+                            centre_circle = plt.Circle((0, 0), 0.70, fc='white')
+                            fig.gca().add_artist(centre_circle)
+
                             ax.set_title(f"Répartition de la variable {other_feature}")
                             ax.set_ylabel('')
                             # ax.legend(title=other_feature, loc='upper right', bbox_to_anchor=(1, 0, 0.5, 1))
