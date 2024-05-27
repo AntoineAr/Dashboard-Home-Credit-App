@@ -169,12 +169,12 @@ def main():
                 st.image(local_shap_plot, caption=f"Feature Importance Locale SHAP pour le client {client_id}")
             
             # Explication SHAP :
-            st.write("L'explication SHAP (SHapley Additive exPlanations) est une méthode de décomposition des prédictions de modèles de machine learning. "
-                     "Elle attribue une valeur d'importance à chaque variable pour chaque prédiction. "
-                     "Les valeurs SHAP positives indiquent une contribution positive à la prédiction (probabilité de défaut plus élevée), " 
-                     "tandis que les valeurs négatives indiquent une contribution négative (probabilité de défaut moins élevée). "
-                     "Plus la valeur SHAP est élevée, plus la variable a un impact sur la prédiction. "
-                     "Les graphiques ci-dessus montrent les 10 variables les plus importantes pour le modèle et les 9 variables les plus importantes pour le client sélectionné.")
+            st.write("*L'explication SHAP (SHapley Additive exPlanations) est une méthode de décomposition des prédictions de modèles de machine learning.* "
+                     "*Elle attribue une valeur d'importance à chaque variable pour chaque prédiction.* "
+                     "*Les valeurs SHAP positives indiquent une contribution positive à la prédiction (probabilité de défaut plus élevée),* " 
+                     "*tandis que les valeurs négatives indiquent une contribution négative (probabilité de défaut moins élevée).* "
+                     "*Plus la valeur SHAP est élevée, plus la variable a un impact sur la prédiction.* "
+                     "*Les graphiques ci-dessus montrent les 10 variables les plus importantes pour le modèle et les 9 variables les plus importantes pour le client sélectionné.*")
 
             if st.checkbox("Comparaison vs autres clients (variables SHAP)"):
                 client_data = get_client_data()
