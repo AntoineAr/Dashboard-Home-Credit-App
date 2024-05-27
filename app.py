@@ -202,7 +202,7 @@ def main():
                                     index=0, placeholder="Liste variables")
 
                 if feature:
-                    st.write(f"Pour le client {client_id}, la valeur de {feature} est {selected_client[feature].values[0].round(2)}")
+                    st.write(f"Pour le client {client_id}, la valeur de {feature} est {selected_client[feature].values[0].round(2)}. Moyenne pour l'ensemble des clients : {client_data[feature].mean().round(2)}.")
                     st.write("*Les différences de valeurs pour une même variable entre ce graphique et le graphique précédent*\n"
                                 "*sont dues à la normalisation des données nécessaire à la modélisation.*")
                     fig, ax = plt.subplots()
@@ -226,104 +226,104 @@ def main():
                 else:
                     st.error("Veuillez sélectionner une variable.")
 
-                # Comparaison sur d'autres variables :
-                if st.checkbox("Comparaison sur d'autres variables"):
-                    client_data = get_client_data()
-                    client_raw_data = get_client_raw_data()
-                    if client_data.empty or client_raw_data.empty:
-                        st.error("Erreur lors de la récupération des données de comparaison.")
-                    else:
-                        # Assurez-vous que l'ID client est bien dans l'index
-                        if client_id in client_raw_data['SK_ID_CURR'].values:
-                            selected_client = client_raw_data[client_raw_data['SK_ID_CURR'] == client_id]
+                    # Comparaison sur d'autres variables :
+                    if st.checkbox("Comparaison sur d'autres variables"):
+                        client_data = get_client_data()
+                        client_raw_data = get_client_raw_data()
+                        if client_data.empty or client_raw_data.empty:
+                            st.error("Erreur lors de la récupération des données de comparaison.")
                         else:
-                            selected_client = pd.DataFrame()
-
-                    # Ajout de débogage
-                    # st.write("Données du client sélectionné :")
-                    # st.write(selected_client)
-
-                    other_features = ['YEARS_BIRTH', 'AMT_INCOME_TOTAL', 'AMT_CREDIT', 'NAME_INCOME_TYPE',
-                                            'AMT_CREDIT', 'NAME_EDUCATION_TYPE', 'NAME_FAMILY_STATUS']
-
-                    other_feature = st.selectbox('Veuillez sélectionner une variable à comparer', other_features,
-                                        index=0, placeholder="Liste variables")
-
-                    if other_feature:
-                        if client_raw_data[other_feature].nunique() > 10:
-                            fig, ax = plt.subplots()
-                            sns.kdeplot(client_raw_data[other_feature], label='Ensemble clients', ax=ax)
-
-                            if not selected_client.empty:
-                                # Vérifiez que la feature existe dans les données du client sélectionné
-                                if other_feature in selected_client.columns:
-                                    # st.write(f"Valeur de {feature} pour le client sélectionné : {selected_client[feature].values[0]}")
-                                    ax.axvline(selected_client[other_feature].values[0], color='orange', label='Client sélectionné')
-                                else:
-                                    st.warning(f"La feature {other_feature} n'existe pas pour le client sélectionné.")
+                            # Assurez-vous que l'ID client est bien dans l'index
+                            if client_id in client_raw_data['SK_ID_CURR'].values:
+                                selected_client = client_raw_data[client_raw_data['SK_ID_CURR'] == client_id]
                             else:
-                                st.warning("Le client sélectionné n'a pas été trouvé dans les données.")
+                                selected_client = pd.DataFrame()
 
-                            ax.set_title(f'Distribution de la variable {other_feature}')
-                            ax.set_xlabel(other_feature)
-                            ax.legend(loc='upper right')
-                            st.pyplot(fig)
-                        # Si la feature sélectionnée a moins de 10 valeurs uniques, affichez un pie chart où
-                        # la modalité du client sélectionné est mise en évidence:
-                        else:
-                            explode = []
-                            possible_values = client_raw_data[other_feature].value_counts().index.to_list()
-                            client_value = selected_client[other_feature].values[0]
-                            for value in possible_values:
-                                if value == client_value:
-                                    explode.append(0.1)
+                        # Ajout de débogage
+                        # st.write("Données du client sélectionné :")
+                        # st.write(selected_client)
+
+                        other_features = ['YEARS_BIRTH', 'AMT_INCOME_TOTAL', 'AMT_CREDIT', 'NAME_INCOME_TYPE',
+                                                'AMT_CREDIT', 'NAME_EDUCATION_TYPE', 'NAME_FAMILY_STATUS']
+
+                        other_feature = st.selectbox('Veuillez sélectionner une variable à comparer', other_features,
+                                            index=0, placeholder="Liste variables")
+
+                        if other_feature:
+                            if client_raw_data[other_feature].nunique() > 10:
+                                fig, ax = plt.subplots()
+                                sns.kdeplot(client_raw_data[other_feature], label='Ensemble clients', ax=ax)
+
+                                if not selected_client.empty:
+                                    # Vérifiez que la feature existe dans les données du client sélectionné
+                                    if other_feature in selected_client.columns:
+                                        # st.write(f"Valeur de {feature} pour le client sélectionné : {selected_client[feature].values[0]}")
+                                        ax.axvline(selected_client[other_feature].values[0], color='orange', label='Client sélectionné')
+                                    else:
+                                        st.warning(f"La feature {other_feature} n'existe pas pour le client sélectionné.")
                                 else:
-                                    explode.append(0)
-                            # st.write(f"Valeurs possibles : {possible_values}")
-                            fig, ax = plt.subplots()
-                            wedges, texts, autotexts = ax.pie(
-                                client_raw_data[other_feature].value_counts(), autopct='%1.1f%%', explode=explode, startangle=90,
-                                textprops=dict(color="w"), pctdistance=0.85
-                            )
-                            ax.legend(wedges, possible_values, title=other_feature, loc='center left', bbox_to_anchor=(1, 0, 0.5, 1))
+                                    st.warning("Le client sélectionné n'a pas été trouvé dans les données.")
 
-                            # Ajuster les étiquettes
-                            for text in texts:
-                                text.set_fontsize(8)
-                            for autotext in autotexts:
-                                autotext.set_fontsize(8)
+                                ax.set_title(f'Distribution de la variable {other_feature}')
+                                ax.set_xlabel(other_feature)
+                                ax.legend(loc='upper right')
+                                st.pyplot(fig)
+                            # Si la feature sélectionnée a moins de 10 valeurs uniques, affichez un pie chart où
+                            # la modalité du client sélectionné est mise en évidence:
+                            else:
+                                explode = []
+                                possible_values = client_raw_data[other_feature].value_counts().index.to_list()
+                                client_value = selected_client[other_feature].values[0]
+                                for value in possible_values:
+                                    if value == client_value:
+                                        explode.append(0.1)
+                                    else:
+                                        explode.append(0)
+                                # st.write(f"Valeurs possibles : {possible_values}")
+                                fig, ax = plt.subplots()
+                                wedges, texts, autotexts = ax.pie(
+                                    client_raw_data[other_feature].value_counts(), autopct='%1.1f%%', explode=explode, startangle=90,
+                                    textprops=dict(color="w"), pctdistance=0.85
+                                )
+                                ax.legend(wedges, possible_values, title=other_feature, loc='center left', bbox_to_anchor=(1, 0, 0.5, 1))
 
-                            # Dessiner un cercle au centre pour créer un effet de beignet
-                            centre_circle = plt.Circle((0, 0), 0.70, fc='white')
-                            fig.gca().add_artist(centre_circle)
+                                # Ajuster les étiquettes
+                                for text in texts:
+                                    text.set_fontsize(8)
+                                for autotext in autotexts:
+                                    autotext.set_fontsize(8)
 
-                            ax.set_title(f"Répartition de la variable {other_feature}")
-                            ax.set_ylabel('')
-                            # ax.legend(title=other_feature, loc='upper right', bbox_to_anchor=(1, 0, 0.5, 1))
-                            st.pyplot(fig)
+                                # Dessiner un cercle au centre pour créer un effet de beignet
+                                centre_circle = plt.Circle((0, 0), 0.70, fc='white')
+                                fig.gca().add_artist(centre_circle)
 
-                    else:
-                        st.error("Veuillez sélectionner une variable.")
+                                ax.set_title(f"Répartition de la variable {other_feature}")
+                                ax.set_ylabel('')
+                                # ax.legend(title=other_feature, loc='upper right', bbox_to_anchor=(1, 0, 0.5, 1))
+                                st.pyplot(fig)
 
-            # J'aimerais maintenant ajouter une autre case qui permettrait de voir des corrélations, via scatterplot,
-            # entre une liste de variables choisies par l'utilisateur (choix restreint via une liste déroulante).
-            if st.checkbox("Corrélation entre variables"):
-                features_scaled = get_scaled_data()
-                st.write("**Sélectionnez deux variables pour afficher le scatterplot de leur corrélation**")
-                features_corr = ['CREDIT_INCOME_RATIO','EXT_SOURCE_2', 'AMT_INCOME_TOTAL',  'EXT_SOURCE_3', 'DOWN_PAYMENT', 'PAYMENT_RATE', 'EXT_SOURCE_1', 
-                            'BURO_NB_CURRENCY', 'PREV_PERC_INST_PAID_ON_TIME', 'YEARS_EMPLOYED', 
-                            'MEAN_PREV_CNT_PAYMENT','AMT_CREDIT', 'YEARS_BIRTH',
-                            'INCOME_PER_PERSON']
-                feature_x = st.selectbox('Variable X', features_corr, index=0, placeholder="Liste variables")
-                feature_y = st.selectbox('Variable Y', features_corr, index=1, placeholder="Liste variables")
+                        else:
+                            st.error("Veuillez sélectionner une variable.")
 
-                if feature_x and feature_y:
-                    fig, ax = plt.subplots()
-                    sns.scatterplot(x=feature_x, y=feature_y, data=features_scaled, ax=ax)
-                    ax.set_title(f"Corrélation entre {feature_x} et {feature_y}")
-                    st.pyplot(fig)
-                else:
-                    st.error("Veuillez sélectionner deux variables.")
+                        # J'aimerais maintenant ajouter une autre case qui permettrait de voir des corrélations, via scatterplot,
+                        # entre une liste de variables choisies par l'utilisateur (choix restreint via une liste déroulante).
+                        if st.checkbox("Corrélation entre variables"):
+                            features_scaled = get_scaled_data()
+                            st.write("**Sélectionnez deux variables pour afficher le scatterplot de leur corrélation**")
+                            features_corr = ['CREDIT_INCOME_RATIO','EXT_SOURCE_2', 'AMT_INCOME_TOTAL',  'EXT_SOURCE_3', 'DOWN_PAYMENT', 'PAYMENT_RATE', 'EXT_SOURCE_1', 
+                                        'BURO_NB_CURRENCY', 'PREV_PERC_INST_PAID_ON_TIME', 'YEARS_EMPLOYED', 
+                                        'MEAN_PREV_CNT_PAYMENT','AMT_CREDIT', 'YEARS_BIRTH',
+                                        'INCOME_PER_PERSON']
+                            feature_x = st.selectbox('Variable X', features_corr, index=0, placeholder="Liste variables")
+                            feature_y = st.selectbox('Variable Y', features_corr, index=1, placeholder="Liste variables")
+
+                            if feature_x and feature_y:
+                                fig, ax = plt.subplots()
+                                sns.scatterplot(x=feature_x, y=feature_y, data=features_scaled, ax=ax)
+                                ax.set_title(f"Corrélation entre {feature_x} et {feature_y}")
+                                st.pyplot(fig)
+                            else:
+                                st.error("Veuillez sélectionner deux variables.")
 
 
 if __name__ == "__main__":
