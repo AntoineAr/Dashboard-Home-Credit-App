@@ -251,6 +251,7 @@ def main():
 
                     if other_feature:
                         if client_raw_data[other_feature].nunique() > 10:
+                            st.write(f"*Pour le client {client_id}, la valeur de {other_feature} est {selected_client[other_feature].values[0]}. Moyenne de l'ensemble des clients : {client_raw_data[other_feature].mean().round(2)}.*")
                             fig, ax = plt.subplots()
                             sns.kdeplot(client_raw_data[other_feature], label='Ensemble clients', ax=ax)
 
@@ -271,6 +272,7 @@ def main():
                         # Si la feature sélectionnée a moins de 10 valeurs uniques, affichez un pie chart où
                         # la modalité du client sélectionné est mise en évidence:
                         else:
+                            st.write(f"*Pour le client {client_id}, la valeur de {other_feature} est {selected_client[other_feature].values[0]}. Valeur la plus fréquente : {client_raw_data[other_feature].mode().round(2)}.*")
                             explode = []
                             possible_values = client_raw_data[other_feature].value_counts().index.to_list()
                             client_value = selected_client[other_feature].values[0]
