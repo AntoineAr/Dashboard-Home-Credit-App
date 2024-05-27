@@ -21,10 +21,10 @@ def get_client_ids():
     try:
         response = requests.get(f"{API_URL}/list_ids")
         response.raise_for_status()
-        ids = response.text.strip('Liste des id clients valides :\n\n').strip('[]').split(', ')
+        ids = response.text.strip('Liste des id client.e.s valides :\n\n').strip('[]').split(', ')
         return [int(id) for id in ids]
     except requests.RequestException as e:
-        st.error(f"Erreur lors de la récupération des IDs clients: {e}")
+        st.error(f"Erreur lors de la récupération des IDs client.e.s: {e}")
         return []
 
 # Fonction pour obtenir les informations et prédictions d'un client
@@ -33,7 +33,7 @@ def get_client_prediction(client_id):
     if response.status_code == 200:
         return response.json()
     else:
-        st.error("Erreur lors de la récupération des informations du client.")
+        st.error("Erreur lors de la récupération des informations de l'individu.")
         return None
 
 # Fonction pour obtenir le graphique SHAP global
@@ -63,7 +63,7 @@ def get_client_data():
         response.raise_for_status()
         return pd.read_json(response.text)
     except requests.RequestException as e:
-        st.error(f"Erreur lors de la récupération des données clients: {e}")
+        st.error(f"Erreur lors de la récupération des données client.e.s: {e}")
         return pd.DataFrame()
     
 # Fonction pour obtenir les données brutes pour comparaison :
@@ -73,7 +73,7 @@ def get_client_raw_data():
         response.raise_for_status()
         return pd.read_json(response.text)
     except requests.RequestException as e:
-        st.error(f"Erreur lors de la récupération des données brutes clients: {e}")
+        st.error(f"Erreur lors de la récupération des données brutes client.e.s: {e}")
         return pd.DataFrame()
     
 def get_scaled_data():
@@ -113,10 +113,10 @@ def main():
     st.write("Bienvenue sur le tableau de bord de prédiction de défaut de paiement.")
     client_ids = get_client_ids()
     if not client_ids:
-        st.error("Impossible de récupérer les IDs clients.")
+        st.error("Impossible de récupérer les IDs client.e.s.")
         return
-    client_id = st.selectbox('Veuillez sélectionnez un ID client', client_ids,
-                         index=None, placeholder="Liste identifiants clients")
+    client_id = st.selectbox('Veuillez sélectionnez un ID client.e', client_ids,
+                         index=None, placeholder="Liste identifiants client.e.s")
     
     if st.button("Obtenir la prédiction"):
         prediction = get_client_prediction(client_id)
@@ -136,7 +136,7 @@ def main():
         st.write(f'*Le seuil de refus est fixé à : {0.377 * 100:.2f}% (obtenu lors de la modélisation)*')
         
         client_infos = prediction['client_infos']
-        st.sidebar.write("**Informations du client**")
+        st.sidebar.write("**Informations de la personne sélectionnée :**")
         st.sidebar.write(f"**Sexe :** {client_infos['sexe']}")
         st.sidebar.write(f"**Âge :** {client_infos['âge']} ans")
         st.sidebar.write(f"**Revenu :** {client_infos['revenu']} €")
@@ -163,10 +163,10 @@ def main():
             if global_shap_plot:
                 st.image(global_shap_plot, caption="Feature Importance Globale SHAP")
 
-            st.write("**Top 9 des variables les plus importantes pour ce client en particulier**")
+            st.write("**Top 9 des variables les plus importantes pour l'individu sélectionné**")
             local_shap_plot = get_local_shap_plot(client_id)
             if local_shap_plot:
-                st.image(local_shap_plot, caption=f"Feature Importance Locale SHAP pour le client {client_id}")
+                st.image(local_shap_plot, caption=f"Feature Importance Locale SHAP pour l'individu {client_id}")
             
             # Explication SHAP :
             st.write("*L'explication SHAP (SHapley Additive exPlanations) est une méthode de décomposition des prédictions de modèles de machine learning.* "
@@ -174,9 +174,9 @@ def main():
                      "*Les valeurs SHAP positives indiquent une contribution positive à la prédiction (probabilité de défaut plus élevée),* " 
                      "*tandis que les valeurs négatives indiquent une contribution négative (probabilité de défaut moins élevée).* "
                      "*Plus la valeur SHAP est élevée, plus la variable a un impact sur la prédiction.* "
-                     "*Les graphiques ci-dessus montrent les 10 variables les plus importantes pour le modèle et les 9 variables les plus importantes pour le client sélectionné.*")
+                     "*Les graphiques ci-dessus montrent les 10 variables les plus importantes pour le modèle et les 9 variables les plus importantes pour l'individu sélectionné.*")
 
-            if st.checkbox("Comparaison vs autres clients (variables SHAP)"):
+            if st.checkbox("Comparaison vs autres client.e.s (variables SHAP)"):
                 client_data = get_client_data()
                 client_raw_data = get_client_raw_data()
 
@@ -202,21 +202,21 @@ def main():
                                     index=0, placeholder="Liste variables")
 
                 if feature:
-                    st.write(f"Pour le client {client_id}, la valeur de {feature} est {selected_client[feature].values[0].round(2)}. Moyenne pour l'ensemble des clients : {client_data[feature].mean().round(2)}.")
+                    st.write(f"Pour l'individu {client_id}, la valeur de {feature} est {selected_client[feature].values[0].round(2)}. Moyenne pour l'ensemble des client.e.s : {client_data[feature].mean().round(2)}.")
                     st.write("*Les différences de valeurs pour une même variable entre ce graphique et le graphique précédent*\n"
                                 "*sont dues à la normalisation des données nécessaire à la modélisation.*")
                     fig, ax = plt.subplots()
-                    sns.kdeplot(client_data[feature], label='Ensemble clients', ax=ax)
+                    sns.kdeplot(client_data[feature], label='Ensemble client.e.s', ax=ax)
 
                     if not selected_client.empty:
                         # Vérifiez que la feature existe dans les données du client sélectionné
                         if feature in selected_client.columns:
                             # st.write(f"Valeur de {feature} pour le client sélectionné : {selected_client[feature].values[0]}")
-                            ax.axvline(selected_client[feature].values[0], color='orange', label='Client sélectionné')
+                            ax.axvline(selected_client[feature].values[0], color='orange', label='Client.e sélectionné.e')
                         else:
-                            st.warning(f"La feature {feature} n'existe pas pour le client sélectionné.")
+                            st.warning(f"La feature {feature} n'existe pas pour l'individu sélectionné.")
                     else:
-                        st.warning("Le client sélectionné n'a pas été trouvé dans les données.")
+                        st.warning("L'individu sélectionné n'a pas été trouvé dans les données.")
 
                     ax.set_title(f'Distribution de la variable {feature}')
                     ax.set_xlabel(feature)
@@ -251,7 +251,7 @@ def main():
 
                     if other_feature:
                         if client_raw_data[other_feature].nunique() > 10:
-                            st.write(f"*Pour le client {client_id}, la valeur de {other_feature} est {selected_client[other_feature].values[0]}. Moyenne de l'ensemble des clients : {client_raw_data[other_feature].mean().round(2)}.*")
+                            st.write(f"*Pour le client {client_id}, la valeur de {other_feature} est {selected_client[other_feature].values[0]}. Moyenne de l'ensemble des client.e.s : {client_raw_data[other_feature].mean().round(2)}.*")
                             fig, ax = plt.subplots()
                             sns.kdeplot(client_raw_data[other_feature], label='Ensemble clients', ax=ax)
 
@@ -259,11 +259,11 @@ def main():
                                 # Vérifiez que la feature existe dans les données du client sélectionné
                                 if other_feature in selected_client.columns:
                                     # st.write(f"Valeur de {feature} pour le client sélectionné : {selected_client[feature].values[0]}")
-                                    ax.axvline(selected_client[other_feature].values[0], color='orange', label='Client sélectionné')
+                                    ax.axvline(selected_client[other_feature].values[0], color='orange', label='Client.e sélectionné.e')
                                 else:
-                                    st.warning(f"La feature {other_feature} n'existe pas pour le client sélectionné.")
+                                    st.warning(f"La feature {other_feature} n'existe pas pour l'individu sélectionné.")
                             else:
-                                st.warning("Le client sélectionné n'a pas été trouvé dans les données.")
+                                st.warning("L'individu sélectionné n'a pas été trouvé dans les données.")
 
                             ax.set_title(f'Distribution de la variable {other_feature}')
                             ax.set_xlabel(other_feature)
