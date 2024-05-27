@@ -154,7 +154,7 @@ def main():
         # Affichage de la jauge du score
         display_gauge(score, 1 - threshold)
 
-        if st.checkbox("Analyse des features"):
+        if st.checkbox("Analyse des variables les plus importantes"):
             st.session_state.show_analysis = True
 
         if 'show_analysis' in st.session_state and st.session_state.show_analysis:
@@ -167,56 +167,64 @@ def main():
             local_shap_plot = get_local_shap_plot(client_id)
             if local_shap_plot:
                 st.image(local_shap_plot, caption=f"Feature Importance Locale SHAP pour le client {client_id}")
+            
+            # Explication SHAP :
+            st.write("L'explication SHAP (SHapley Additive exPlanations) est une méthode de décomposition des prédictions de modèles de machine learning. "
+                     "Elle attribue une valeur d'importance à chaque variable pour chaque prédiction. "
+                     "Les valeurs SHAP positives indiquent une contribution positive à la prédiction (probabilité de défaut plus élevée), " 
+                     "tandis que les valeurs négatives indiquent une contribution négative (probabilité de défaut moins élevée). "
+                     "Plus la valeur SHAP est élevée, plus la variable a un impact sur la prédiction. "
+                     "Les graphiques ci-dessus montrent les 10 variables les plus importantes pour le modèle et les 9 variables les plus importantes pour le client sélectionné.")
 
-                if st.checkbox("Comparaison vs autres clients (variables SHAP)"):
-                    client_data = get_client_data()
-                    client_raw_data = get_client_raw_data()
+            if st.checkbox("Comparaison vs autres clients (variables SHAP)"):
+                client_data = get_client_data()
+                client_raw_data = get_client_raw_data()
 
-                    if client_data.empty or client_raw_data.empty:
-                        st.error("Erreur lors de la récupération des données de comparaison.")
+                if client_data.empty or client_raw_data.empty:
+                    st.error("Erreur lors de la récupération des données de comparaison.")
+                else:
+                    # On s'assure que l'Id client est bien dans l'index
+                    if client_id in client_data['SK_ID_CURR'].values:
+                        selected_client = client_data[client_data['SK_ID_CURR'] == client_id]
                     else:
-                        # On s'assure que l'Id client est bien dans l'index
-                        if client_id in client_data['SK_ID_CURR'].values:
-                            selected_client = client_data[client_data['SK_ID_CURR'] == client_id]
+                        selected_client = pd.DataFrame()
+
+                # Ajout de débogage
+                # st.write("Données du client sélectionné :")
+                # st.write(selected_client)
+
+                top_10_features_shap = ['EXT_SOURCE_2', 'EXT_SOURCE_3', 'DOWN_PAYMENT',
+                                        'PAYMENT_RATE', 'EXT_SOURCE_1', 
+                                        'BURO_NB_CURRENCY', 'PREV_PERC_INST_PAID_ON_TIME',
+                                        'YEARS_EMPLOYED', 'MEAN_PREV_CNT_PAYMENT']
+
+                feature = st.selectbox('Veuillez sélectionner une variable à comparer', top_10_features_shap,
+                                    index=0, placeholder="Liste variables")
+
+                if feature:
+                    st.write(f"Pour le client {client_id}, la valeur de {feature} est {selected_client[feature].values[0].round(2)}")
+                    st.write("*Les différences de valeurs pour une même variable entre ce graphique et le graphique précédent*\n"
+                                "*sont dues à la normalisation des données nécessaire à la modélisation.*")
+                    fig, ax = plt.subplots()
+                    sns.kdeplot(client_data[feature], label='Ensemble clients', ax=ax)
+
+                    if not selected_client.empty:
+                        # Vérifiez que la feature existe dans les données du client sélectionné
+                        if feature in selected_client.columns:
+                            # st.write(f"Valeur de {feature} pour le client sélectionné : {selected_client[feature].values[0]}")
+                            ax.axvline(selected_client[feature].values[0], color='orange', label='Client sélectionné')
                         else:
-                            selected_client = pd.DataFrame()
-
-                    # Ajout de débogage
-                    # st.write("Données du client sélectionné :")
-                    # st.write(selected_client)
-
-                    top_10_features_shap = ['EXT_SOURCE_2', 'EXT_SOURCE_3', 'DOWN_PAYMENT',
-                                            'PAYMENT_RATE', 'EXT_SOURCE_1', 
-                                            'BURO_NB_CURRENCY', 'PREV_PERC_INST_PAID_ON_TIME',
-                                            'YEARS_EMPLOYED', 'MEAN_PREV_CNT_PAYMENT']
-
-                    feature = st.selectbox('Veuillez sélectionner une variable à comparer', top_10_features_shap,
-                                        index=0, placeholder="Liste variables")
-
-                    if feature:
-                        st.write(f"Pour le client {client_id}, la valeur de {feature} est {selected_client[feature].values[0].round(2)}")
-                        st.write("*Les différences de valeurs pour une même variable entre ce graphique et le graphique précédent*\n"
-                                 "*sont dues à la normalisation des données nécessaire à la modélisation.*")
-                        fig, ax = plt.subplots()
-                        sns.kdeplot(client_data[feature], label='Ensemble clients', ax=ax)
-
-                        if not selected_client.empty:
-                            # Vérifiez que la feature existe dans les données du client sélectionné
-                            if feature in selected_client.columns:
-                                # st.write(f"Valeur de {feature} pour le client sélectionné : {selected_client[feature].values[0]}")
-                                ax.axvline(selected_client[feature].values[0], color='orange', label='Client sélectionné')
-                            else:
-                                st.warning(f"La feature {feature} n'existe pas pour le client sélectionné.")
-                        else:
-                            st.warning("Le client sélectionné n'a pas été trouvé dans les données.")
-
-                        ax.set_title(f'Distribution de la variable {feature}')
-                        ax.set_xlabel(feature)
-                        ax.set_ylabel('Densité')
-                        ax.legend()
-                        st.pyplot(fig)
+                            st.warning(f"La feature {feature} n'existe pas pour le client sélectionné.")
                     else:
-                        st.error("Veuillez sélectionner une variable.")
+                        st.warning("Le client sélectionné n'a pas été trouvé dans les données.")
+
+                    ax.set_title(f'Distribution de la variable {feature}')
+                    ax.set_xlabel(feature)
+                    ax.set_ylabel('Densité')
+                    ax.legend()
+                    st.pyplot(fig)
+                else:
+                    st.error("Veuillez sélectionner une variable.")
 
                 # Comparaison sur d'autres variables :
                 if st.checkbox("Comparaison sur d'autres variables"):
@@ -271,7 +279,7 @@ def main():
                                     explode.append(0.1)
                                 else:
                                     explode.append(0)
-                            st.write(f"Valeurs possibles : {possible_values}")
+                            # st.write(f"Valeurs possibles : {possible_values}")
                             fig, ax = plt.subplots()
                             wedges, texts, autotexts = ax.pie(
                                 client_raw_data[other_feature].value_counts(), autopct='%1.1f%%', explode=explode, startangle=90,
