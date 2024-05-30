@@ -104,7 +104,7 @@ def display_gauge(score, threshold, in_sidebar=False):
         }
     ))
     if in_sidebar:
-        fig.update_layout(autosize=True)
+        fig.update_layout(autosize=False, width=200, height=175)
         st.sidebar.plotly_chart(fig)
     else:
         fig.update_layout(autosize=False, width=400, height=350)
@@ -144,24 +144,24 @@ def main():
         st.write(f'*Le seuil de refus est fixé à : {threshold * 100:.2f}% (obtenu lors de la modélisation)*')
         
         client_infos = prediction['client_infos']
-        st.sidebar.write("**Informations de la personne sélectionnée**")
-        st.sidebar.write(f"**Sexe :** {client_infos['sexe']}")
-        st.sidebar.write(f"**Âge :** {client_infos['âge']} ans")
-        st.sidebar.write(f"**Revenu :** {client_infos['revenu']} €")
-        st.sidebar.write(f"**Source de revenu :** {client_infos['source_revenu']}")
-        st.sidebar.write(f"**Montant du crédit :** {client_infos['montant_credit']} €")
-        st.sidebar.write(f"**Statut familial :** {client_infos['statut_famille']}")
-        st.sidebar.write(f"**Éducation :** {client_infos['education']}")
-        st.sidebar.write(f"**Ratio revenu/crédit :** {client_infos['ratio_revenu_credit']}%")
+        st.sidebar.write("**Informations de la personne sélectionnée :**")
+        st.sidebar.write(f"*Sexe :* {client_infos['sexe']}")
+        st.sidebar.write(f"*Âge :* {client_infos['âge']} ans")
+        st.sidebar.write(f"*Revenu :* {client_infos['revenu']} $")
+        st.sidebar.write(f"*Source de revenu :* {client_infos['source_revenu']}")
+        st.sidebar.write(f"*Montant du crédit :* {client_infos['montant_credit']} $")
+        st.sidebar.write(f"*Statut familial :* {client_infos['statut_famille']}")
+        st.sidebar.write(f"*Éducation :* {client_infos['education']}")
+        st.sidebar.write(f"*Ratio revenu/crédit :* {client_infos['ratio_revenu_credit']}%")
         
         # Ajout des informations de probabilité de défaut et du score dans la sidebar
-        st.sidebar.write("/n**Informations de prédiction**")
-        st.sidebar.write(f"**Probabilité de défaut :** {prob_defaut:.2f}%")
-        st.sidebar.write(f"**Score :** {score:.2f}")
-        st.sidebar.write(f"**Seuil de refus :** {threshold * 100:.2f}%")
+        st.sidebar.write("**Informations de prédiction :**")
+        st.sidebar.write(f"*Probabilité de défaut :* {prob_defaut:.2f}%")
+        st.sidebar.write(f"*Score :* {score:.2f}")
+        st.sidebar.write(f"*Seuil de refus :* {threshold * 100:.2f}%")
 
         # Affichage de la jauge du score dans la sidebar
-        st.sidebar.write("**Jauge de score :**")
+        st.sidebar.write("*Jauge de score :*")
         display_gauge(score, 1 - threshold, in_sidebar=True)
 
         # st.sidebar.write(f"**Score :** {score:.2f}")
