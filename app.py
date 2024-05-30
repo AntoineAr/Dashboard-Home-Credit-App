@@ -86,7 +86,7 @@ def get_scaled_data():
         return pd.DataFrame()
     
 # Fonction pour afficher la jauge
-def display_gauge(score, threshold):
+def display_gauge(score, threshold, in_sidebar=False):
     fig = go.Figure(go.Indicator(
         domain={'x': [0, 1], 'y': [0, 1]},
         value=score,
@@ -103,9 +103,13 @@ def display_gauge(score, threshold):
             }
         }
     ))
+    if in_sidebar:
+        fig.update_layout(autosize=False, width=400, height=350)
+        st.sidebar.plotly_chart(fig)
+    else:
+        fig.update_layout(autosize=False, width=400, height=350)
+        st.plotly_chart(fig)
 
-    fig.update_layout(autosize=False, width=400, height=350)
-    st.plotly_chart(fig)
 
 # Configuration de la page d'accueil
 def main():
@@ -131,9 +135,13 @@ def main():
             st.success("Le crédit est accordé.")
         else:
             st.error("Le crédit est refusé.")
+
+        prob_defaut = round(prediction['probabilité_défaut'] * 100, 2)
+        score = 1 - prob_defaut
+        threshold = 0.377
     
-        st.write(f"**Nous estimons la probabilité de défaut à:** {prediction['probabilité_défaut'] * 100:.2f}%")
-        st.write(f'*Le seuil de refus est fixé à : {0.377 * 100:.2f}% (obtenu lors de la modélisation)*')
+        st.write(f"**Nous estimons la probabilité de défaut à:** {prob_defaut}%")
+        st.write(f'*Le seuil de refus est fixé à : {threshold * 100:.2f}% (obtenu lors de la modélisation)*')
         
         client_infos = prediction['client_infos']
         st.sidebar.write("**Informations de la personne sélectionnée**")
@@ -146,12 +154,20 @@ def main():
         st.sidebar.write(f"**Éducation :** {client_infos['education']}")
         st.sidebar.write(f"**Ratio revenu/crédit :** {client_infos['ratio_revenu_credit']}%")
         
-        score = 1 - prediction['probabilité_défaut']
-        threshold = 0.377
+        # Ajout des informations de probabilité de défaut et du score dans la sidebar
+        st.sidebar.write(f"**Probabilité de défaut :** {prob_defaut:.2f}%")
+        st.sidebar.write(f"**Score :** {score:.2f}")
+        st.sidebar.write(f"**Seuil de refus :** {threshold * 100:.2f}%")
+
+        # Affichage de la jauge du score dans la sidebar
+        st.sidebar.write("**Jauge de score :**")
+        display_gauge(score, 1 - threshold, in_sidebar=True)
+
         # st.sidebar.write(f"**Score :** {score:.2f}")
         # st.sidebar.write(f"**Seuil de refus :** {threshold}")
 
         # Affichage de la jauge du score
+        st.write("**Jauge de score :**")
         display_gauge(score, 1 - threshold)
 
         if st.checkbox("Analyse des variables les plus importantes"):
