@@ -153,12 +153,16 @@ def main():
         st.sidebar.write(f"*Statut familial :* {client_infos['statut_famille']}")
         st.sidebar.write(f"*Éducation :* {client_infos['education']}")
         st.sidebar.write(f"*Ratio revenu/crédit :* {client_infos['ratio_revenu_credit']}%")
+
+        if prediction['statut'] == 'Crédit accepté':
+            statut = "Crédit accordé"
+        else:
+            statut = "Crédit refusé"        
         
         # Ajout des informations de probabilité de défaut et du score dans la sidebar
         st.sidebar.write("**Informations de prédiction :**")
-        st.sidebar.write(f"*Probabilité de défaut :* {prob_defaut:.2f}%")
+        st.sidebar.write(f"*Statut du crédit :* {statut}.")
         st.sidebar.write(f"*Score :* {score:.2f}")
-        st.sidebar.write(f"*Seuil de refus :* {threshold * 100:.2f}%")
 
         # Affichage de la jauge du score dans la sidebar
         st.sidebar.write("*Jauge de score :*")
