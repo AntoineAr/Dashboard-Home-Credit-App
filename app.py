@@ -104,7 +104,7 @@ def display_gauge(score, threshold, in_sidebar=False):
         }
     ))
     if in_sidebar:
-        fig.update_layout(autosize=False, width=400, height=350)
+        fig.update_layout(autosize=True)
         st.sidebar.plotly_chart(fig)
     else:
         fig.update_layout(autosize=False, width=400, height=350)
@@ -137,7 +137,7 @@ def main():
             st.error("Le crédit est refusé.")
 
         prob_defaut = round(prediction['probabilité_défaut'] * 100, 2)
-        score = 1 - prob_defaut
+        score = 1 - prediction['probabilité_défaut']
         threshold = 0.377
     
         st.write(f"**Nous estimons la probabilité de défaut à:** {prob_defaut}%")
@@ -155,6 +155,7 @@ def main():
         st.sidebar.write(f"**Ratio revenu/crédit :** {client_infos['ratio_revenu_credit']}%")
         
         # Ajout des informations de probabilité de défaut et du score dans la sidebar
+        st.sidebar.write("/n**Informations de prédiction**")
         st.sidebar.write(f"**Probabilité de défaut :** {prob_defaut:.2f}%")
         st.sidebar.write(f"**Score :** {score:.2f}")
         st.sidebar.write(f"**Seuil de refus :** {threshold * 100:.2f}%")
