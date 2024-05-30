@@ -104,7 +104,7 @@ def display_gauge(score, threshold, in_sidebar=False):
         }
     ))
     if in_sidebar:
-        fig.update_layout(autosize=False, width=400, height=350)
+        fig.update_layout(autosize=False, width=300, height=250)
         st.sidebar.plotly_chart(fig)
     else:
         fig.update_layout(autosize=False, width=400, height=350)
