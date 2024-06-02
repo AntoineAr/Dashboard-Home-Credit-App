@@ -127,18 +127,30 @@ def main():
 
     # Sélection de la taille du texte
     text_size = st.radio("Choisissez la taille du texte", ["Normal", "Gros", "Très gros"])
-    text_style = set_text_size(text_size)
-
     # CSS pour ajuster globalement la taille du texte:
     st.markdown(
         f"""
         <style>
         body {{
-            {text_style}
+            font-size: 16px;
+        }}
+        .big-font {{
+            font-size: 20px !important;
+        }}
+        .very-big-font {{
+            font-size: 24px !important;
         }}
         </style>
         """, unsafe_allow_html=True
     )
+
+    # Application de la classe CSS en fonction de la sélection
+    if text_size == "Normal":
+        st.write('<div class="normal-font">', unsafe_allow_html=True)
+    elif text_size == "Gros":
+        st.write('<div class="big-font">', unsafe_allow_html=True)
+    elif text_size == "Très gros":
+        st.write('<div class="very-big-font">', unsafe_allow_html=True)
 
     client_ids = get_client_ids()
     if not client_ids:
