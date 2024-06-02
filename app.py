@@ -141,9 +141,9 @@ def main():
     if 'prediction' in st.session_state:
         prediction = st.session_state.prediction
         if prediction['statut'] == 'Crédit accepté':
-            st.success("Le crédit est accordé.")
+            st.success(":white_check_mark: Le crédit est accordé.")
         else:
-            st.error("Le crédit est refusé.")
+            st.error(":x: Le crédit est refusé.")
 
         prob_defaut = round(prediction['probabilité_défaut'] * 100, 2)
         score = 1 - prediction['probabilité_défaut']
