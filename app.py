@@ -16,6 +16,15 @@ import matplotlib.pyplot as plt
 # Configuration de l'URL de l'API
 API_URL = "https://api-flask-credit-368cdcf3e0aa.herokuapp.com"
 
+# Fonction pour ajuster la taille du texte
+def set_text_size(size):
+    if size == "Normal":
+        return "font-size:16px;"
+    elif size == "Gros":
+        return "font-size:20px;"
+    elif size == "Très gros":
+        return "font-size:24px;"
+
 # Fonction pour obtenir la liste des IDs clients:
 def get_client_ids():
     try:
@@ -115,6 +124,22 @@ def display_gauge(score, threshold, in_sidebar=False):
 def main():
     st.title("Tableau de bord - Décision de Crédit")
     st.write("Bienvenue sur le tableau de bord de prédiction de défaut de paiement.")
+
+    # Sélection de la taille du texte
+    text_size = st.radio("Choisissez la taille du texte", ["Normal", "Gros", "Très gros"])
+    text_style = set_text_size(text_size)
+
+    # CSS pour ajuster globalement la taille du texte:
+    st.markdown(
+        f"""
+        <style>
+        body {{
+            {text_style}
+        }}
+        </style>
+        """, unsafe_allow_html=True
+    )
+
     client_ids = get_client_ids()
     if not client_ids:
         st.error("Impossible de récupérer les IDs client.e.s.")
