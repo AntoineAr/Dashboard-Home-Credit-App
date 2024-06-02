@@ -16,15 +16,6 @@ import matplotlib.pyplot as plt
 # Configuration de l'URL de l'API
 API_URL = "https://api-flask-credit-368cdcf3e0aa.herokuapp.com"
 
-# Fonction pour ajuster la taille du texte
-def set_text_size(size):
-    if size == "Normal":
-        return "font-size:16px;"
-    elif size == "Gros":
-        return "font-size:20px;"
-    elif size == "Très gros":
-        return "font-size:24px;"
-
 # Fonction pour obtenir la liste des IDs clients:
 def get_client_ids():
     try:
@@ -85,6 +76,8 @@ def get_client_raw_data():
         st.error(f"Erreur lors de la récupération des données brutes client.e.s: {e}")
         return pd.DataFrame()
     
+# Fonction pour obtenir les données scalées pour comparaison :
+    
 def get_scaled_data():
     try:
         response = requests.get(f"{API_URL}/scaled_data")
@@ -124,42 +117,9 @@ def display_gauge(score, threshold, in_sidebar=False):
 def main():
     st.title("Tableau de bord - Décision de Crédit")
     st.write("Bienvenue sur le tableau de bord de prédiction de défaut de paiement.")
+    st.write("*Rappel : Ceci est un outil d'aide à la décision et ne remplace pas l'avis d'un professionnel.*")
 
-    # Sélection de la taille du texte
-    text_size = st.radio("Choisissez la taille du texte", ["Normal", "Gros", "Très gros"])
-
-    # CSS pour ajuster globalement la taille du texte:
-    st.markdown(
-        """
-        <style>
-        .big-font {
-            font-size: 20px !important;
-        }
-        .very-big-font {
-            font-size: 24px !important;
-        }
-        </style>
-        """, unsafe_allow_html=True
-    )
-
-    # JavaScript pour ajuster la taille du texte
-    st.components.v1.html(
-        f"""
-        <script>
-        function setTextSize(size) {{
-            document.body.classList.remove('big-font', 'very-big-font');
-            if (size === 'Gros') {{
-                document.body.classList.add('big-font');
-            }} else if (size === 'Très gros') {{
-                document.body.classList.add('very-big-font');
-            }}
-        }}
-        setTextSize('{text_size}');
-        </script>
-        """, 
-        height=0,
-        scrolling=False
-    )
+    # # Sélection client :
 
     client_ids = get_client_ids()
     if not client_ids:
@@ -168,6 +128,7 @@ def main():
     client_id = st.selectbox('Veuillez sélectionnez un ID client.e', client_ids,
                          index=None, placeholder="Liste identifiants client.e.s")
     
+    # Obtention de la prédiction :
     if st.button("Obtenir la prédiction"):
         prediction = get_client_prediction(client_id)
 
@@ -393,8 +354,6 @@ def main():
                         else:
                             st.error("Veuillez sélectionner deux variables.")
 
-    # Fin de la classe CSS pour ajuster la taille du texte
-    # st.write('</div>', unsafe_allow_html=True)
 
 
 if __name__ == "__main__":
