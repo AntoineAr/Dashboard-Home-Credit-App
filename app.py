@@ -116,10 +116,10 @@ def display_gauge(score, threshold, in_sidebar=False):
 # Configuration de la page d'accueil
 def main():
     st.title("Tableau de bord - Décision de Crédit")
-    st.header("Bienvenue sur le tableau de bord de prédiction de défaut de paiement.")
+    st.header("Bienvenue sur le tableau de bord d'aide à la décision d'attribution de crédit.")
 
     # Afficher un avertissement, en rouge, pour rappeler que c'est un outil d'aide à la décision :
-    st.write(":warning:* :red[Rappel : Ceci est un outil d'aide à la décision et ne remplace pas l'avis d'un professionnel.]*")
+    st.write(":warning: *:red[Rappel : Ceci est un outil d'aide à la décision et ne remplace pas l'avis d'un professionnel.]*")
 
     # # Sélection client :
 
