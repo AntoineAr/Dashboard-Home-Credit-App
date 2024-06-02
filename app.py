@@ -119,7 +119,7 @@ def main():
     st.header("Bienvenue sur le tableau de bord de prédiction de défaut de paiement.")
 
     # Afficher un avertissement, en rouge, pour rappeler que c'est un outil d'aide à la décision :
-    st.write(":warning:*:red[Rappel : Ceci est un outil d'aide à la décision et ne remplace pas l'avis d'un professionnel.]*")
+    st.write(":warning:* :red[Rappel : Ceci est un outil d'aide à la décision et ne remplace pas l'avis d'un professionnel.]*")
 
     # # Sélection client :
 
