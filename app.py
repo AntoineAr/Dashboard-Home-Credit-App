@@ -127,30 +127,39 @@ def main():
 
     # Sélection de la taille du texte
     text_size = st.radio("Choisissez la taille du texte", ["Normal", "Gros", "Très gros"])
+
     # CSS pour ajuster globalement la taille du texte:
     st.markdown(
-        f"""
+        """
         <style>
-        body {{
-            font-size: 16px;
-        }}
-        .big-font {{
+        .big-font {
             font-size: 20px !important;
-        }}
-        .very-big-font {{
+        }
+        .very-big-font {
             font-size: 24px !important;
-        }}
+        }
         </style>
         """, unsafe_allow_html=True
     )
 
-    # Application de la classe CSS en fonction de la sélection
-    if text_size == "Normal":
-        st.write('<div class="normal-font">', unsafe_allow_html=True)
-    elif text_size == "Gros":
-        st.write('<div class="big-font">', unsafe_allow_html=True)
-    elif text_size == "Très gros":
-        st.write('<div class="very-big-font">', unsafe_allow_html=True)
+    # JavaScript pour ajuster la taille du texte
+    st.components.v1.html(
+        f"""
+        <script>
+        function setTextSize(size) {{
+            document.body.classList.remove('big-font', 'very-big-font');
+            if (size === 'Gros') {{
+                document.body.classList.add('big-font');
+            }} else if (size === 'Très gros') {{
+                document.body.classList.add('very-big-font');
+            }}
+        }}
+        setTextSize('{text_size}');
+        </script>
+        """, 
+        height=0,
+        scrolling=False
+    )
 
     client_ids = get_client_ids()
     if not client_ids:
@@ -385,7 +394,7 @@ def main():
                             st.error("Veuillez sélectionner deux variables.")
 
     # Fin de la classe CSS pour ajuster la taille du texte
-    st.write('</div>', unsafe_allow_html=True)
+    # st.write('</div>', unsafe_allow_html=True)
 
 
 if __name__ == "__main__":
