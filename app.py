@@ -384,6 +384,9 @@ def main():
                         else:
                             st.error("Veuillez sélectionner deux variables.")
 
+    # Fin de la classe CSS pour ajuster la taille du texte
+    st.write('</div>', unsafe_allow_html=True)
+
 
 if __name__ == "__main__":
     main()
