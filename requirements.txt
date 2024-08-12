@@ -9,7 +9,7 @@ lightgbm
 shap
 numba==0.57.1
 requests
-streamlit==1.34.0
+streamlit==1.37.0
 plotly==5.22.0
 
 
